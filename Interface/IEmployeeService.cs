@@ -11,6 +11,6 @@ namespace EmployeeManager.Interface
     internal interface IEmployeeService
     {
         void SetEmployee(EmployeeAddOptions employee);
-        Employee? GetEmployee(int employeeId, out Employee? employee);
+        Employee? GetEmployee(int employeeId);
     }
 }

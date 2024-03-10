@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeManager.EmployeeParse
 {
-    internal class EmployeeAddOptions
+    public class EmployeeAddOptions
     {
         [Option("employeeId", Required = true, HelpText = "EmployeeManager Id")]
         public int EmployeeId { get; set; }

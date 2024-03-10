@@ -1,6 +1,7 @@
 ﻿using EmployeeManager.Data;
 using EmployeeManager.EmployeeParse;
 using EmployeeManager.Interface;
+using EmployeeManager.Mappers;
 using EmployeeManager.Models;
 
 
@@ -9,47 +10,37 @@ namespace EmployeeManager.Services
     internal class EmployeeService : IEmployeeService
     {
         private readonly ApplicationDbContext _context;
-        public EmployeeService(ApplicationDbContext context) 
+        public EmployeeService(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public Employee? GetEmployee(int employeeId, out Employee? employee)
+        public Employee? GetEmployee(int employeeId)
         {
-            using (_context)
+            try
             {
-                try
-                {
-                    employee = _context.Employees.Find(employeeId);
-                    return employee;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                    return employee = null;
-                }
+                var employee = _context.Employees.Find(employeeId);
+                return employee;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return null;
             }
         }
 
         public void SetEmployee(EmployeeAddOptions employee)
         {
-            using (_context)
+            try
             {
-                Employee employeeModel = new Employee()
-                {
-                    Employeeid = employee.EmployeeId,
-                    Employeename = employee.EmployeeName,
-                    Employeesalary = employee.EmployeeSalary,
-                };
-                try
-                {
-                    _context.Employees.Add(employeeModel);
-                    _context.SaveChanges();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
+                _context.Employees.Add(employee.ToEmployee());
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
     }

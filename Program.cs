@@ -23,10 +23,12 @@ namespace EmployeeManager
                 return;
             }
 
-            ApplicationDbContext context = new ApplicationDbContext();
-            Program program = new Program(new EmployeeService(context));
+            using (ApplicationDbContext dbContext = new ApplicationDbContext())
+            {
+                Program program = new Program(new EmployeeService(dbContext));
 
-            program.Run(args);
+                program.Run(args);
+            }
         }
 
         void Run(string[] args)
@@ -38,7 +40,12 @@ namespace EmployeeManager
                     break;
                 case "get-employee":
                     Employee? employee = null;
-                    Parser.Default.ParseArguments<EmployeeGetOptions>(args).WithParsed(o => _employeeService.GetEmployee(o.EmployeeId, out employee));
+
+                    Parser.Default.ParseArguments<EmployeeGetOptions>(args).WithParsed(o =>
+                    {
+                        var employeeFound = _employeeService.GetEmployee(o.EmployeeId);
+                        employee = employeeFound;
+                    });
 
                     if (employee == null)
                     {

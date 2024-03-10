@@ -5,6 +5,9 @@ namespace EmployeeManager.Data
 {
     public partial class ApplicationDbContext : DbContext
     {
+        private static readonly string ConnectionString = Environment.GetEnvironmentVariable("connectionString")
+            ?? throw new InvalidOperationException("You must set the UvsTaskConnectionString environment variable");
+
         public ApplicationDbContext()
         {
         }
@@ -20,12 +23,7 @@ namespace EmployeeManager.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var value = System.Environment.GetEnvironmentVariable("connectionString");
-                if(value == null)
-                {
-                    throw new InvalidOperationException();
-                }
-                optionsBuilder.UseNpgsql(value);
+                optionsBuilder.UseNpgsql(ConnectionString);
             }
         }
 
